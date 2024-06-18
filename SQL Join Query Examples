@@ -1,0 +1,76 @@
+# SQL query to find the top 10 countries by customer count
+
+SELECT D.country,
+	   COUNT(A.customer_id) AS "Total Customers"
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C. city_id
+INNER JOIN country D ON C.country_id = D.country_id
+GROUP BY D.country
+ORDER BY "Total Customers" DESC
+LIMIT 10;
+
+# SQL query to find the top 10 cities from the top 10 countries identified in the previous query
+
+SELECT D.country,
+    C.city,
+    COUNT(A.customer_id) AS "Total Customers"
+FROM customer A
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_ID = D.country_ID
+WHERE D.country IN (
+    SELECT D.country
+    FROM customer A
+    INNER JOIN address B ON A.address_id = B.address_id
+    INNER JOIN city C ON B.city_id = C.city_id
+    INNER JOIN country D ON C.country_ID = D.country_ID
+    GROUP BY D.country
+    ORDER BY COUNT(A.customer_id) DESC
+    LIMIT 10
+)
+GROUP BY D.country, C.city
+ORDER BY "Total Customers" DESC
+LIMIT 10;
+
+# SQL query to find the top 5 customers from the top 10 cities in the top 10 countres by highest payment 
+
+SELECT A.customer_id,                                                -- columns for output
+    A.first_name,
+    A.last_name,
+    D.country,
+    C.city,
+    SUM(P.amount) AS "Total Paid"                                    -- aggregate total payments
+FROM payment P                                                       -- where to find payment amounts
+INNER JOIN customer A ON A.customer_id = P.customer_id               -- link payments to customers
+INNER JOIN address B ON A.address_id = B.address_id
+INNER JOIN city C ON B.city_id = C.city_id
+INNER JOIN country D ON C.country_ID = D.country_ID
+WHERE C.city IN (                                                    -- filter customers by top cities and countries
+    SELECT C.city
+    FROM customer A
+    INNER JOIN address B ON A.address_id = B.address_id
+    INNER JOIN city C ON B.city_id = C.city_id
+    INNER JOIN country D ON C.country_ID = D.country_ID
+    WHERE D.country IN (
+        SELECT D.country
+        FROM customer A
+        INNER JOIN address B ON A.address_id = B.address_id
+        INNER JOIN city C ON B.city_id = C.city_id
+        INNER JOIN country D ON C.country_ID = D.country_ID
+        GROUP BY D.country
+        ORDER BY COUNT(A.customer_id) DESC
+        LIMIT 10
+    )
+    GROUP BY D.Country,                                             -- filter country and city
+    C.city
+    ORDER BY COUNT(A.customer_id) DESC
+    LIMIT 10
+)
+GROUP BY A.customer_id,                                             -- group and sort output
+    A.first_name,
+    A.last_name,
+    D.country,
+    C.city
+ORDER BY "Total Paid" DESC
+LIMIT 5;
