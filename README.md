@@ -24,7 +24,7 @@ Data is proprietary and provided by in-house engineers.<br/>
 The data set is comprised of 15 different tables.<br/>
 PostgreSQL (ver. 16)and pgAdmin 4 (ver. 8) used for RDBMS (relational database management system) to perform analysis.<br/>
 DBeaver (ver. 24.1) used for the ERD (entity relationship diagram) in the data dictionary.<br/>
-Excel and Tableau Public used to create charts and visualizations.<br/>
+Excel and Tableau Public used to create charts and visualizations. https://public.tableau.com/views/3_10Charts/SalesMap?:language=en-US&:sid=&:display_count=n&:origin=viz_share_link<br/>
 Canva used to compile presentation slides.<br/>
 ChatGPT prompted for mock company logo image.<br/>
 
